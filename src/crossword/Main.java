@@ -79,9 +79,10 @@ public class Main {
 		
         // adding button in JFrame
 		confirm.setBounds((int) screenSize.getWidth()/2-50, (int) screenSize.getHeight()/2 +50, 200 ,100 );
+		frame.add(confirm);
 		confirm.doClick();
 		
-		frame.add(confirm);
+		
         frame.add(selctorw);
         frame.add(selctorh);
         confirm.addActionListener(new ActionListener(){ 
