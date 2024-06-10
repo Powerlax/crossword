@@ -113,8 +113,48 @@ public class Main {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); 
 		
 		
+		JButton clear = new JButton("clear");
+
+		
+		int x = 0;
+	    boolean dontask = true;
+		for(i =0; i<h; i++) {
+			for( k =0; k<w; k++) {
+				JButton p = new JButton("a");
+				if (dontask) {x += (int)screenSize.getWidth()/(w+1);}
+				p.setBounds((int) screenSize.getWidth()/(w+1) *k, (int) screenSize.getHeight()/(h+1) *i, (int)screenSize.getWidth()/(w+1) ,(int) screenSize.getHeight()/(h+1) );
+				frame.add(p);
+				p.doClick();
+				
+				buttonList.add(p);
+	            p.addActionListener(new ActionListener(){ 
+	    	        public void actionPerformed(ActionEvent e){ 
+	    	        
+	    	        	cords.add(i*w+k);
+	    	        	
+	    	        	p.setEnabled(false);
+	    	        }  
+	    	    });
+	            clear.addActionListener(new ActionListener(){ 
+	    	        public void actionPerformed(ActionEvent e){ 
+	    	        	p.setEnabled(true);
+	    	        }  
+	    	    });
+	            
+	    	}
+			dontask = false;
+		}
+		
+		clear.setBounds(x,(int) screenSize.getHeight()/(h+1), (int)screenSize.getWidth()/(w+1) ,(int) screenSize.getHeight()/(h+1) );
+		frame.add(clear);
+		clear.doClick();
+
+
+		
+		
+		
 		JButton submit = new JButton("check word");
-		submit.setBounds((int) (screenSize.getWidth()*0.75),0, (int)screenSize.getWidth()/(w+1) ,(int) screenSize.getHeight()/(h+1) );
+		submit.setBounds(x,0, (int)screenSize.getWidth()/(w+1) ,(int) screenSize.getHeight()/(h+1) );
 		frame.add(submit);
 		submit.doClick();
 		
@@ -132,6 +172,7 @@ public class Main {
 	        		attempt+= buttonList.get(cords.get(a));
 
 	        	}
+	        	
         		if(secretWord ==attempt) {
         			for(int c = 0; c<cords.size(); c++) {
         				
@@ -140,27 +181,8 @@ public class Main {
 	        	
 	        }  
 	    }); 
-	        
-		for(i =0; i<h; i++) {
-			for( k =0; k<w; k++) {
-				JButton p = new JButton("a");
-				p.setBounds((int) screenSize.getWidth()/(w+1) *k, (int) screenSize.getHeight()/(h+1) *i, (int)screenSize.getWidth()/(w+1) ,(int) screenSize.getHeight()/(h+1) );
-				frame.add(p);
-				p.doClick();
-				
-				buttonList.add(p);
-	            p.addActionListener(new ActionListener(){ 
-	    	        public void actionPerformed(ActionEvent e){ 
-	    	        
-	    	        	cords.add(i*w+k);
-	    	        	
-	    	        	p.setEnabled(false);
-	    	        }  
-	    	    }); 
-	    	        }
-			}
-
 		}
+	
 
 	}
 
