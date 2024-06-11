@@ -346,13 +346,18 @@ word_list = ['saffron', 'The dried, orange yellow plant used to as dye and as a 
     ['yarn', 'A strand of twisted threads or a long elaborate narrative.'], \
     ['snicker', 'A snide, slightly stifled laugh.']
  
-a = Crossword(13, 13, '-', 5000, word_list)
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument('rows')
+parser.add_argument('cols')
+args = parser.parse_args()
+a = Crossword(int(args.rows), int(args.cols), '-', 5000, word_list)
 a.compute_crossword(2)
 print(len(a.current_word_list))
 print(a.word_bank())
 print(a.solution())
 print(a.word_find())
-print(a.display())
+a.display()
 print(a.legend())
 #end_full = float(time.time())
 #print end_full - start_full
