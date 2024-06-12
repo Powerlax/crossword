@@ -53,10 +53,10 @@ public class Main {
 	        public void actionPerformed(ActionEvent e){  
 	        	button.setVisible(false);
 	        	// selection menu
-	        	JButton tutorial = new JButton("Numbers only click when done");
-	        	tutorial.setBounds((int) screenSize.getWidth()/2-75, (int) screenSize.getHeight()/2 -200, 250 ,100 );
+	        	JLabel tutorial = new JLabel("numbers only");
+	        	tutorial.setBounds((int) screenSize.getWidth()/2, (int) screenSize.getHeight()/2-120 , 250 ,100 );
 	    		frame.add(tutorial);
-	    		tutorial.doClick();
+	    		
 	    		tutorial.setEnabled(false);
 	    	
 	        	
@@ -64,10 +64,10 @@ public class Main {
 	    		
 	    		JTextField selctorw = new JTextField("0");
 	    		JTextField selctorh = new JTextField("0");
-	    		JButton confirm = new JButton("Confirm size Min: (4,4)");
+	    		JButton confirm = new JButton("Confirm size Min: 4");
 	    		
-	    		selctorw.setBounds((int) screenSize.getWidth()/2 -50, (int) screenSize.getHeight()/2 -50, 100 ,100 );
-	    		selctorh.setBounds((int) screenSize.getWidth()/2 +50, (int) screenSize.getHeight()/2 -50, 100 ,100 );
+	    		selctorw.setBounds((int) screenSize.getWidth()/2 -50, (int) screenSize.getHeight()/2 -50, 200 ,100 );
+	    		
 	    		
 	    		
 	            // adding button in JFrame
@@ -78,27 +78,22 @@ public class Main {
 	    		
 	            frame.add(selctorw);
 	            frame.add(selctorh);
+
+	            // makes the grid
 	            confirm.addActionListener(new ActionListener(){ 
-	    	        public void actionPerformed(ActionEvent e){ 
+	    	        public void actionPerformed(ActionEvent e){
+	    	        	confirm.setVisible(false);
 	    	        	if(Integer.parseInt(selctorw.getText())>w) {
 	    	        		w = Integer.parseInt(selctorw.getText());
 	    	        	}
-	    	        	if(Integer.parseInt(selctorh.getText())>h) {
-	    	        		h = Integer.parseInt(selctorh.getText());
-	    	        	}
-	    	        	confirm.setVisible(false);
+	    	        	h=w;
+	    	        	
 	    	        	selctorw.setVisible(false);
 	    	        	selctorh.setVisible(false);
-	    	        	tutorial.setEnabled(true);
-	    		    	
-	    	        }  
-	    	    });
-	            // makes the grid
-	        	tutorial.addActionListener(new ActionListener(){ 
-	    	        public void actionPerformed(ActionEvent e){
 	    	        	
+	    	        	confirm.setVisible(false);
 	    	        	tutorial.setVisible(false);
-	            girdMaker(frame);
+	    	        	girdMaker(frame);
 	     
 
 	        }  
@@ -112,7 +107,7 @@ public class Main {
 	}
 
 	public static void girdMaker(JFrame frame) {
-		Crossword c= CrosswordGenerator.generate(h, w);
+		Crossword c= CrosswordGenerator.generate(w, h);
 	
 		
 		
@@ -168,7 +163,7 @@ public class Main {
 		for(int word =0; word<c.getWordList().length; word++) {
 			str+=c.getWordList()[word] ;
 			if(str.length() >split) {
-			
+				
 				str = str.substring(0, split)+ "\n" +str.substring(split,str.length());
 				split+=40;
 			}
@@ -179,7 +174,7 @@ public class Main {
 		words.setBounds(x,(int) screenSize.getHeight()/(h+1)*2, (int)screenSize.getWidth()/(w+1) ,(int) screenSize.getHeight()/(h+1)*(h-2) );
 		frame.add(words);
 		words.doClick();
-		words.setEnabled(false);
+		
 		
 		
 		submit.addActionListener(new ActionListener(){ 
