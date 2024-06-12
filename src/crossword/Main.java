@@ -9,14 +9,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Main {
-	private static int h = 3;
-	private static int w = 3;
+	private static int h = 4;
+	private static int w = 4;
 	private static int i = 0;
 	private static int k = 0;
 	private static int temp = 0;
 	private static boolean b = false;
+	private static boolean solved = false;
+	private static int Score = 0;
+	private static String won ="";
+	
 	private static String attempt ="";
-	private static String secretWord ="aaa";
+	private static String secretWord ="notEmpty";
 	public static void main(String[] args) {
 		// Creating instance of JFrame
         JFrame frame = new JFrame("Word Serch");
@@ -60,7 +64,7 @@ public class Main {
 	    		
 	    		JTextField selctorw = new JTextField("0");
 	    		JTextField selctorh = new JTextField("0");
-	    		JButton confirm = new JButton("Confirm size");
+	    		JButton confirm = new JButton("Confirm size Min: (4,4)");
 	    		
 	    		selctorw.setBounds((int) screenSize.getWidth()/2 -50, (int) screenSize.getHeight()/2 -50, 100 ,100 );
 	    		selctorh.setBounds((int) screenSize.getWidth()/2 +50, (int) screenSize.getHeight()/2 -50, 100 ,100 );
@@ -92,6 +96,7 @@ public class Main {
 	            // makes the grid
 	        	tutorial.addActionListener(new ActionListener(){ 
 	    	        public void actionPerformed(ActionEvent e){
+	    	        	
 	    	        	tutorial.setVisible(false);
 	            girdMaker(frame);
 	     
@@ -107,20 +112,26 @@ public class Main {
 	}
 
 	public static void girdMaker(JFrame frame) {
+		Crossword c= CrosswordGenerator.generate(h, w);
+	
+		
+		
+		
 		ArrayList<JButton> buttonList = new ArrayList<JButton>();
 	
 		ArrayList<Integer> cords = new ArrayList<Integer>();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); 
 		
 		
-		JButton clear = new JButton("clear");
-
+		
+		
 		
 		int x = 0;
 	    boolean dontask = true;
 		for(i =0; i<h; i++) {
 			for( k =0; k<w; k++) {
-				JButton p = new JButton("a");
+				JButton p = new JButton(Character.toString(c.getCrossword()[i][k]));
+				
 				if (dontask) {x += (int)screenSize.getWidth()/(w+1);}
 				p.setBounds((int) screenSize.getWidth()/(w+1) *k, (int) screenSize.getHeight()/(h+1) *i, (int)screenSize.getWidth()/(w+1) ,(int) screenSize.getHeight()/(h+1) );
 				frame.add(p);
@@ -128,26 +139,17 @@ public class Main {
 				
 				buttonList.add(p);
 	            p.addActionListener(new ActionListener(){ 
-	    	        public void actionPerformed(ActionEvent e){ 
-	    	        
-	    	        	cords.add(i*w+k);
-	    	        	
+	    	        public void actionPerformed(ActionEvent e){   	        
+	    	        	cords.add(buttonList.indexOf(e.getSource()));	    	        	
 	    	        	p.setEnabled(false);
 	    	        }  
 	    	    });
-	            clear.addActionListener(new ActionListener(){ 
-	    	        public void actionPerformed(ActionEvent e){ 
-	    	        	p.setEnabled(true);
-	    	        }  
-	    	    });
+
 	            
 	    	}
 			dontask = false;
 		}
 		
-		clear.setBounds(x,(int) screenSize.getHeight()/(h+1), (int)screenSize.getWidth()/(w+1) ,(int) screenSize.getHeight()/(h+1) );
-		frame.add(clear);
-		clear.doClick();
 
 
 		
@@ -157,28 +159,99 @@ public class Main {
 		submit.setBounds(x,0, (int)screenSize.getWidth()/(w+1) ,(int) screenSize.getHeight()/(h+1) );
 		frame.add(submit);
 		submit.doClick();
+		JButton score = new JButton("Score :" + Score);
+		score.setBounds(x,(int) screenSize.getHeight()/(h+1)*1, (int)screenSize.getWidth()/(w+1) ,(int) screenSize.getHeight()/(h+1) );
+		frame.add(score);
+		score.doClick();
+		String str = "";
+		int split = 40;
+		for(int word =0; word<c.getWordList().length; word++) {
+			str+=c.getWordList()[word] ;
+			if(str.length() >split) {
+			
+				str = str.substring(0, split)+ "\n" +str.substring(split,str.length());
+				split+=40;
+			}
+			str+= " ";
+		}
+
+		JButton words = new JButton("<html>" + str.replaceAll("\\n", "<br>") + "</html>");
+		words.setBounds(x,(int) screenSize.getHeight()/(h+1)*2, (int)screenSize.getWidth()/(w+1) ,(int) screenSize.getHeight()/(h+1)*(h-2) );
+		frame.add(words);
+		words.doClick();
+		words.setEnabled(false);
+		
 		
 		submit.addActionListener(new ActionListener(){ 
-	        public void actionPerformed(ActionEvent e){ 
-	        	for(int a =1; a<cords.size(); a++) {
-	        		if(cords.get(a) > cords.get(a+1)) {
-	        			 temp = cords.get(a);
-	        			 cords.set(a, a+1);
-	        			 cords.set(a+1, temp);
-	        			 
-	        		}
+	         public  void actionPerformed(ActionEvent e){
+	        	boolean pass = true;
+	        	solved = false;
+	        	attempt ="";
+	        	cords.sort(null);
+	        	if(cords.size() < 2) {
+	        		return;
 	        	}
-	        	for(int a =0; a<cords.size(); a++) {
-	        		attempt+= buttonList.get(cords.get(a));
+	        	int row = cords.get(0)/w;
+	        	int col = cords.get(0)%w;
+	        	int row1 = cords.get(1)/w;
+	        	int col1 = cords.get(1)%w;
+	        	if(row == row1 && col1 == col+1) {
+		        	for(int temp =2; temp<cords.size(); temp++) {
+		        		 row1 = cords.get(temp)/w;
+			        	 col1 = cords.get(temp)%w;
+			        	 if(row != row1 || col1 != col+temp) {
+			        		 pass = false;
+			        		 break;
+			        	 }
+		        	}
+	        	}
+	        	else if(row1 == row+1 && col1 == col){
+		        	for(int temp =2; temp<cords.size(); temp++) {
+		        		 row1 = cords.get(temp)/w;
+			        	 col1 = cords.get(temp)%w;
+			        	 if(row1 != row+temp || col1 != col) {
+			        		 pass = false;
+			        		 break;
+			        	 }
+		        	}
+	        		
+	        	}
+	        	else {
+	        		 pass = false;
+	        		
+	        	}
+	        	
 
+	        	
+	        	if(pass ==true) {
+	        		
+		        	for(int a =0; a<cords.size(); a++) {
+		        		attempt+= buttonList.get(cords.get(a)).getText();
+	
+		        	}
+		        	
+		        	for(int len =0; len<c.getWordList().length; len++) {
+		        		secretWord=c.getWordList()[len];
+		        		
+		        		if(secretWord.equals(attempt)) {
+		        			won +=secretWord;
+		        			cords.clear();
+		        			solved = true;
+		        			Score += 50*attempt.length();
+		        			score.setText("Score :" + Score);
+		        			if(Score == won.length()*50) {
+		        				
+		        			}
+		        			break;
+		        		}
+		        	}
 	        	}
-	        	
-        		if(secretWord ==attempt) {
-        			for(int c = 0; c<cords.size(); c++) {
-        				
-        			}
-        		}
-	        	
+	        	if(solved == false) {
+	        		for(int len =0; len<cords.size();len++) {
+	        			buttonList.get(cords.get(len)).setEnabled(true);
+	        		}
+	        		cords.clear();
+	        	}       	
 	        }  
 	    }); 
 		}
