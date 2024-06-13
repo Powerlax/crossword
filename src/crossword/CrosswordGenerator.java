@@ -8,7 +8,9 @@ import java.util.HashMap;
 public class CrosswordGenerator {
     public static Crossword generate(int rows, int cols) {
         try {
-            Process process = Runtime.getRuntime().exec("python C://Users/Bogdi/git/crossword/src/crossword/helper.py " + rows + " " + cols);
+           // Process process = Runtime.getRuntime().exec("python C://Users/Bogdi/git/crossword/src/crossword/helper.py " + rows + " " + cols);
+        	String path =  "python " + (CrosswordGenerator.class.getProtectionDomain().getCodeSource().getLocation().getPath()+"\\helper.py ").toString().substring(1) + rows + " " + cols;
+        	Process process = Runtime.getRuntime().exec(path );
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
